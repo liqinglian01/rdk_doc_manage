@@ -1,51 +1,53 @@
+# 部署「文档中心 · Portal」（sites/portal），不是仓库根目录旧版单体 Docusaurus。
+# 构建前会执行 prebuild → portal-prepare.mjs，桥接各子站 docs / 版本化目录。
 name: Deploy Docusaurus site to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # 当 main 分支有推送时触发部署
-  workflow_dispatch: # 允许手动触发
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sites/portal
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '24'  # 使用 Node.js 24 版本
-        cache: 'npm'
-    - name: Clean install dependencies
-      run: |
-        rm -rf node_modules
-        npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: sites/portal/package-lock.json
 
-    - name: Build Docusaurus site
-      run: npm run build
+      - name: Install dependencies (Portal)
+        run: |
+          rm -rf node_modules
+          npm ci
 
-    - name: Debug env variables
-      run: |
-        echo "GIT_USER: ${{ secrets.GITHUB_ACTOR }}"
-        echo "GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
-        echo "GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}"
+      - name: Build Portal
+        run: npm run build
 
-        
-    - name: Set up Git config
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-        
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Setup SSH for deploy
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-    - name: Deploy to GitHub Pages
-      run: USE_SSH=true npm run deploy
+      - name: Deploy Portal to GitHub Pages
+        env:
+          USE_SSH: "true"
+          GIT_USER: ${{ github.actor }}
+        run: npm run deploy

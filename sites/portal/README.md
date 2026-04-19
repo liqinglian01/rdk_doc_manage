@@ -4,9 +4,30 @@
 
 ## 本地运行
 
+**不要在仓库根目录执行根目录的 `npm run start`**，那会启动根部的旧版单体文档站（`docusaurus.config.js`），不是本 Portal。
+
+在**本目录**安装并启动（从仓库根目录时先 `cd sites/portal`）：
+
 ```bash
+cd sites/portal
 npm install
 npm run start
+```
+
+或在仓库根目录一键启动 Portal：
+
+```bash
+npm run start:portal
+```
+
+浏览器请打开 **带 baseUrl 的路径**（见 `docusaurus.config.js` 里的 `baseUrl`），例如当前若为 `baseUrl: "/rdk_doc_manage/"`，则开发地址为：
+
+`http://localhost:3000/rdk_doc_manage/`（末尾建议保留 `/`）
+
+也可用脚本（会自动执行 `portal-prepare`）：
+
+```bash
+node sites/scripts/dev.mjs portal
 ```
 
 ## 维护说明

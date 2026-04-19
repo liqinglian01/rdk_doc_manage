@@ -1,16 +1,16 @@
-
 name: Sync gh-pages to OSS
 
 on:
   workflow_run:
-    workflows: ["Deploy Docusaurus site to GitHub Pages"]  # deploy.yml workflow 名称
+    workflows: ["Deploy Docusaurus site to GitHub Pages"]
     types:
       - completed
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   sync-gh-pages:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # 上游 deploy 成功时自动同步；手动运行本 workflow 时也执行
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
 
     steps:

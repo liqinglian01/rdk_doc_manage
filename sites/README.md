@@ -116,11 +116,15 @@ node sites/scripts/dev.mjs os-rdk-s100 --port 3005
 
 ### 3.3 启动门户站
 
+**勿在仓库根目录执行根目录的 `npm run start`**（那是旧版单体文档站，不是 Portal）。门户站必须在 `sites/portal` 下启动，或在根目录执行 `npm run start:portal`。
+
 ```bash
 cd sites/portal
 npm install
 npm run start
 ```
+
+开发与线上路径以 **`sites/portal/docusaurus.config.js` 的 `baseUrl`** 为准；本地访问请打开 `http://localhost:3000<baseUrl>/`（例如 `baseUrl` 为 `/rdk_doc_manage/` 时即 `http://localhost:3000/rdk_doc_manage/`）。
 
 门户站首页以卡片形式列出所有子站，卡片的跳转地址在 `sites/portal/src/data/sites.js` 中维护；**子站部署地址变化时只改这里**。带 `versions` 字段的卡片会自动显示 "最新 Vx.y.z" 与 "共 N 个版本" 徽标。
 
