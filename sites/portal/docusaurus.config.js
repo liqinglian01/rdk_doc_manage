@@ -75,7 +75,7 @@ const config = {
   tagline: "D-Robotics 开发者文档总入口",
   favicon: "img/logo.png",
   url: "https://liqinglian01.github.io",
-  baseUrl: "/",
+  baseUrl: "/rdk_doc_manage/",
 
   organizationName: "liqinglian01",
   projectName: "rdk_doc_manage",
