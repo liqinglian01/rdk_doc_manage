@@ -62,3 +62,25 @@ This will start a static file server and provide the following links for access 
 
 **Note:** Please ensure that Node.js version 18.0 or higher is required.
 
+---
+
+### IV. Multi-site split (sites/)
+
+This repo is being split into a documentation matrix under [`sites/`](./sites/README.md):
+
+- `sites/portal/` — the **master management Docusaurus** (landing page + cross-site navigation).
+- `sites/product-*`, `sites/os-*`, `sites/tros`, `sites/examples`, `sites/accessories`, `sites/software-*`, `sites/algorithm-toolchain`, `sites/model-zoo` — one standalone Docusaurus per product/topic (will move to separate repos).
+
+Quick commands:
+
+```shell
+# (Re)generate skeletons from sites.config.json
+node sites/scripts/scaffold.mjs
+
+# Install & start any sub-site locally
+node sites/scripts/dev.mjs portal
+node sites/scripts/dev.mjs product-rdk-x3 --port 3005
+```
+
+See [`sites/README.md`](./sites/README.md) for the full architecture, site inventory, baseUrl plan and migration guide. Original `docs/` and `docs_s/` are kept untouched for now — content migration into the new sub-sites is a follow-up step.
+

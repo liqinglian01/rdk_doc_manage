@@ -1,0 +1,82 @@
+---
+title: 贡献指南
+description: 如何向子站提交文档、新增站点、以及把子站迁出为独立仓库
+---
+
+import styles from "./meta.module.css";
+
+<div className={styles.page}>
+
+# 贡献指南
+
+## 向某个子站提交内容
+
+1. 确定归属子站（参见[关于文档矩阵](/about)）。
+2. 进入 `sites/<id>/` 目录，在 `docs/` 下添加或修改 Markdown。
+3. 本地预览：
+
+   ```bash
+   cd sites/<id>
+   npm install
+   npm run start
+   ```
+
+4. 迁出为独立仓库后，直接在对应的独立仓库提交 PR。
+
+## 新增一个子站
+
+1. 在 `sites/sites.config.json` 的 `sites` 数组里追加一条配置。
+2. 在仓库根目录执行：
+
+   ```bash
+   node sites/scripts/scaffold.mjs --only <新站 id>
+   ```
+
+3. 在 `sites/portal/src/data/sites.js` 的 `sites` 数组里追加卡片。
+
+## 新增分组
+
+在 `sites/portal/src/data/sites.js` 的 `groups` 数组里加一项（`id` / `anchor` / `title` / `subtitle` / `accent`），然后把目标子站的 `group` 字段指向新 group id 即可。
+
+## 新增版本（版本化子站）
+
+以 OS 系列为例，新增 `V4.1.0` 版本：
+
+```bash
+# 方式 A：用 Docusaurus 官方命令（推荐）
+cd sites/os-rdk-s100
+npm run docusaurus docs:version V4.1.0
+
+# 方式 B：在 sites.config.json 里 groups.os.versions 末尾追加 V4.1.0，
+#        然后重新生成骨架（现有版本文件保留）：
+node sites/scripts/scaffold.mjs --only os-rdk-s100
+```
+
+## 把子站迁出为独立仓库
+
+推荐使用 `sites/scripts/extract.mjs`：
+
+```bash
+# 预览：只打印计划，不实际写入
+node sites/scripts/extract.mjs product-rdk-x3 --out ../rdk-x3-docs --dry-run
+
+# 拷贝到目标目录
+node sites/scripts/extract.mjs product-rdk-x3 --out ../rdk-x3-docs
+
+# 拷贝 + 初始化 git 仓库 + 首次提交
+node sites/scripts/extract.mjs product-rdk-x3 --out ../rdk-x3-docs --git
+```
+
+迁出后：
+
+1. 在新仓库 `npm install && npm run start` 验证。
+2. 推到远端，配置 GitHub Pages（`.github/workflows/deploy.yml` 已就绪，设置 `GH_PAGES` 权限即可）。
+3. 回到 `sites/portal/src/data/sites.js`，把对应子站 `href` 改成正式部署地址（完整 URL 或反向代理路径）。
+
+## Markdown 约定
+
+- 每篇文档顶部用 frontmatter 指定 `title` 与 `sidebar_position`。
+- 图片放到各子站 `static/img/` 目录，用 `/img/xxx.png` 引用（迁出后路径仍然有效）。
+- 二级标题（`##`）起组织正文；一级标题由 frontmatter `title` 自动生成。
+
+</div>
