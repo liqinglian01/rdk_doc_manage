@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkrdk_docs_portal=self.webpackChunkrdk_docs_portal||[]).push([[3890],{4952:s=>{s.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"product-rdk-x5"}')}}]);
